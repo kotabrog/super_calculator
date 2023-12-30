@@ -27,9 +27,10 @@ wasm-bindgen-futures = "0.4.37"
 version = "0.3.64"
 features = [
     "console",
-    "HtmlInputElement",
     "HtmlElement",
+    "HtmlInputElement",
     "InputEvent",
+    "KeyboardEvent",
     "Window",
     "Document",
 ]
