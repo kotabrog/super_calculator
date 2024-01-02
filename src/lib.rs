@@ -35,6 +35,18 @@ fn add_history_entry(value: &str, history_container: &HtmlElement) -> Result<()>
     Ok(())
 }
 
+fn calculate_and_format(input: &str) -> Result<String, String> {
+    if let Some(plus_index) = input.find('+') {
+        let (left, right) = input.split_at(plus_index);
+        let x = left.trim().parse::<i32>().map_err(|_| "左側の数値の解析に失敗しました")?;
+        let y = right[1..].trim().parse::<i32>().map_err(|_| "右側の数値の解析に失敗しました")?;
+
+        Ok(format!("{} + {} → {}", x, y, x + y))
+    } else {
+        Err("式に '+' が含まれていません".to_string())
+    }
+}
+
 fn handle_keydown(event: Event) -> Result<()> {
     let event = match event_to_keboard_event(&event) {
         Ok(event) => event,
@@ -47,6 +59,7 @@ fn handle_keydown(event: Event) -> Result<()> {
         let display = get_html_element_by_id("formatted-display")?;
         let history_container = get_html_element_by_id("history-container")?;
         let value = display.inner_text();
+        let value = calculate_and_format(&value).unwrap_or_else(|e| e);
         add_history_entry(&value, &history_container)?;
         display.set_inner_text("");
         input_elem.set_value("");
