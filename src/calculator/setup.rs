@@ -59,8 +59,8 @@ impl Calculator {
             let display = HtmlElement::new_from_id(FORMATTED_DISPLAY)?;
             let history_container = HtmlElement::new_from_id(HISTORY_CONTAINER)?;
             let value = display.get_inner_text();
-            let value = Self::calculate_and_format(&value).unwrap_or_else(|e| e);
-            Self::add_history_entry(&value, &history_container)?;
+            let result = Self::calculate_and_format(&value);
+            Self::add_history_entry(&(&value, result), &history_container)?;
             display.set_inner_text("");
             input.set_value("");
         }

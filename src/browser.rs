@@ -9,7 +9,7 @@ mod event;
 pub use window::window;
 pub use document::document;
 pub use element::{
-    get_element_by_id, create_element,
+    get_element_by_id, create_element, element_append_child,
 };
 pub use html_element::{
     get_html_element_by_id, append_child, is_scrolled_to_bottom,

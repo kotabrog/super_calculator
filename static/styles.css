@@ -38,6 +38,10 @@ body {
     text-align: center;
 }
 
+.error-text {
+    color: red;
+}
+
 #input-area {
     grid-row: 2;
     grid-column: 2;

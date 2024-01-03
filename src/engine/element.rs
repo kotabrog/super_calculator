@@ -2,6 +2,7 @@ use anyhow::Result;
 use crate::browser::{
     get_element_by_id, create_element,
     add_event_listener_with_callback,
+    element_append_child,
     EventClosure,
 };
 use super::Node;
@@ -30,6 +31,11 @@ impl Element {
 
     pub fn set_class_name(&self, value: &str) {
         self.inner.set_class_name(value)
+    }
+
+    pub fn append_child(&self, child: &Node) -> Result<Node> {
+        Ok(Node::new(element_append_child(
+            &self.inner, child.inner())?))
     }
 
     pub fn add_event_listener_with_callback(
