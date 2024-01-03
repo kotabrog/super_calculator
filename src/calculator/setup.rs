@@ -60,7 +60,7 @@ impl Calculator {
             let history_container = HtmlElement::new_from_id(HISTORY_CONTAINER)?;
             let value = display.get_inner_text();
             let result = Self::calculate_and_format(&value);
-            Self::add_history_entry(&(&value, result), &history_container)?;
+            Self::add_history_entry(&value, &result, &history_container)?;
             display.set_inner_text("");
             input.set_value("");
         }

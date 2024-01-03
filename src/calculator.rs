@@ -17,8 +17,10 @@ impl Calculator {
             let (left, right) = input.split_at(plus_index);
             let x = left.trim().parse::<i32>().map_err(|_| "左側の数値の解析に失敗しました")?;
             let y = right[1..].trim().parse::<i32>().map_err(|_| "右側の数値の解析に失敗しました")?;
-    
-            Ok(format!("{} + {} → {}", x, y, x + y))
+            match x.checked_add(y) {
+                Some(result) => Ok(format!("{} + {} → {}", x, y, result)),
+                None => Err("int32の範囲を超える加算です".to_string()),
+            }
         } else {
             Err("式に '+' が含まれていません".to_string())
         }
