@@ -7,7 +7,11 @@ use anyhow::Result;
 const INPUT_AREA: &str = "input-area";
 const FORMATTED_DISPLAY: &str = "formatted-display";
 const HISTORY_CONTAINER: &str = "history-container";
+const HELP_BUTTON: &str = "help-button";
+const HELP_POPUP_CONTAINER: &str = "help-popup-container";
+const CLOSE_HELP: &str = "close-help";
 const HISTORY_ITEM: &str = "history-item";
+const HIDDEN: &str = "hidden";
 
 pub struct Calculator {}
 

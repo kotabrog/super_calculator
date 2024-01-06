@@ -1,6 +1,7 @@
 use anyhow::Result;
 use crate::browser::{
     get_html_element_by_id, is_scrolled_to_bottom, append_child,
+    remove_class, set_class,
 };
 use super::Node;
 
@@ -24,6 +25,14 @@ impl HtmlElement {
 
     pub fn set_inner_text(&self, value: &str) {
         self.inner.set_inner_text(value)
+    }
+
+    pub fn set_class(&self, class: &str) {
+        set_class(&self.inner, class)
+    }
+
+    pub fn remove_class(&self, class: &str) -> Result<()> {
+        remove_class(&self.inner, class)
     }
 
     pub fn append_child(&self, child: &Node) -> Result<Node> {

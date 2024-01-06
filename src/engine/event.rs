@@ -1,5 +1,7 @@
 use anyhow::Result;
-use crate::browser::{event_to_keboard_event, get_input_element_from_event};
+use crate::browser::{
+    event_to_keboard_event, get_input_element_from_event,
+};
 use super::{HtmlInputElement, KeyboardEvent};
 
 #[derive(Debug, Clone)]
@@ -11,6 +13,10 @@ impl Event {
     pub fn new(inner: web_sys::Event) -> Self {
         Self { inner }
     }
+
+    // pub fn get_target_element(&self) -> Result<Element> {
+    //     Ok(Element::new(get_element_from_event(&self.inner)?))
+    // }
 
     pub fn get_target_input_element(&self) -> Result<HtmlInputElement> {
         Ok(HtmlInputElement::new(get_input_element_from_event(&self.inner)?))

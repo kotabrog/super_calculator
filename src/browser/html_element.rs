@@ -10,6 +10,16 @@ pub fn get_html_element_by_id(id: &str) -> Result<HtmlElement> {
         .map_err(|element| anyhow!("Error converting {:#?} to HtmlElement", element))
 }
 
+pub fn set_class(element: &HtmlElement, class: &str) {
+    element.set_class_name(class)
+}
+
+pub fn remove_class(element: &HtmlElement, class: &str) -> Result<()> {
+    element.class_list()
+        .remove_1(class)
+        .map_err(|_| anyhow!("Error removing class {}", class))
+}
+
 pub fn append_child(parent: &HtmlElement, child: &Node) -> Result<Node> {
     parent
         .append_child(child)

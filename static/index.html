@@ -4,9 +4,28 @@
     <meta charset="UTF-8">
     <title>Super Calculator</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"/>
   </head>
   <body>
     <div class="container">
+      <button id="help-button">
+        <span class="material-symbols-outlined">
+          help
+        </span>
+      </button>
+      <div id="help-popup-container" class="hidden">
+        <div id="help-popup">
+          <div id="help-content">
+              <button id="close-help">×</button>
+              <h2>操作方法</h2>
+              <p>Ctrl + Enter を押して入力を確定します。</p>
+              <h3>機能</h3>
+              <p>・和</p>
+              <h3>入力例</h3>
+              <p>1 + 2</p>
+          </div>
+        </div>
+      </div>
       <div class="device">
         <div id="history-container"></div>
         <input id="input-area" type="text" placeholder="数式を入力してください" autofocus>

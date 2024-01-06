@@ -20,3 +20,11 @@ pub fn element_append_child(parent: &Element, child: &Node) -> Result<Node> {
         .append_child(child)
         .map_err(|_| anyhow!("Error appending child to parent"))
 }
+
+// pub fn get_element_from_event(event: &Event) -> Result<Element> {
+//     event
+//         .target()
+//         .ok_or_else(|| anyhow!("No target found on event"))?
+//         .dyn_into::<Element>()
+//         .map_err(|element| anyhow!("Error converting {:#?} to Element", element))
+// }
