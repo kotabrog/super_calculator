@@ -54,6 +54,22 @@ impl Num {
             },
         }
     }
+
+    pub fn plus(&self) -> Result<Self, String> {
+        match self {
+            Self::I32(x) => Ok(Self::I32(*x)),
+        }
+    }
+
+    pub fn minus(&self) -> Result<Self, String> {
+        match self {
+            Self::I32(x) => {
+                x.checked_mul(-1)
+                    .ok_or("int32の範囲を超える符号反転です".to_string())
+                    .map(Self::I32)
+            },
+        }
+    }
 }
 
 impl std::fmt::Display for Num {

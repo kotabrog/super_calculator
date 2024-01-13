@@ -8,17 +8,28 @@ impl Expression {
         let term_type = Self::get_term_type(node)?;
         match term_type {
             TermType::Operator => {
-                if node.len_children() != 2 {
-                    return Err("構文解析に失敗しました".to_string());
+                if Self::is_unary_operator(node)? {
+                    if node.len_children() != 1 {
+                        return Err("構文解析に失敗しました".to_string());
+                    }
+                    result.push(
+                        node.value().as_ref().unwrap().to_string());
+                    let child_result = Self::display_loop(
+                        node.children().get(0).unwrap())?;
+                    result.extend(child_result);
+                } else {
+                    if node.len_children() != 2 {
+                        return Err("構文解析に失敗しました".to_string());
+                    }
+                    let left_result = Self::display_loop(
+                        node.children().get(0).unwrap())?;
+                    result.extend(left_result);
+                    result.push(
+                        node.value().as_ref().unwrap().to_string());
+                    let right_result = Self::display_loop(
+                        node.children().get(1).unwrap())?;
+                    result.extend(right_result);
                 }
-                let left_result = Self::display_loop(
-                    node.children().get(0).unwrap())?;
-                result.extend(left_result);
-                result.push(
-                    node.value().as_ref().unwrap().to_string());
-                let right_result = Self::display_loop(
-                    node.children().get(1).unwrap())?;
-                result.extend(right_result);
             },
             TermType::Num => {
                 if node.len_children() != 0 {

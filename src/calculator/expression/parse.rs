@@ -37,8 +37,8 @@ impl Expression {
         }
     }
 
-    fn append_to_ast_ops(mut marker: Node<Term>, c: char) -> Result<Node<Term>, String> {
-        let op = Operator::parse(c)?;
+    fn append_to_ast_ops(mut marker: Node<Term>, c: char, unary: bool) -> Result<Node<Term>, String> {
+        let op = Operator::parse(c, unary)?;
         if marker.value().is_none() {
             marker.set_value(Term::Operator(op));
             return Ok(marker);
@@ -81,6 +81,13 @@ impl Expression {
         let mut chars = input
             .trim().chars().peekable();
 
+        if let Some(&c) = chars.peek() {
+            if Operator::is_operator(c) {
+                marker = Self::append_to_ast_ops(marker, c, true)?;
+                chars.next();
+            }
+        }
+
         let mut target_str = String::new();
         while let Some(&c) = chars.peek() {
             if c.is_digit(10) {
@@ -92,7 +99,7 @@ impl Expression {
                 if c.is_whitespace() {
                     // skip
                 } else if Operator::is_operator(c) {
-                    marker = Self::append_to_ast_ops(marker, c)?;
+                    marker = Self::append_to_ast_ops(marker, c, false)?;
                 } else {
                     return Err("対応していない文字です".to_string());
                 }
@@ -105,8 +112,7 @@ impl Expression {
         }
 
         root = marker.root();
-        println!("root:{}", root);
 
-        Ok(Self::new_from_ast(root))
+        Ok(Self::new(root))
     }
 }

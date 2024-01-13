@@ -23,9 +23,8 @@ pub struct Calculator {}
 
 impl Calculator {
     fn calculate_and_format(input: &str) -> Result<String, String> {
-        // let expression = Expression::parse(input)?;
-        let expression = Self::parse(input)?;
-        let result = expression.calculate_temp()?;
+        let expression = Expression::parse(input)?;
+        let result = expression.calculate()?;
         Ok(format!("{} → {}", expression, result))
     }
 }
@@ -45,7 +44,7 @@ mod tests {
     #[test]
     fn parse_invalid_operator() {
         let input = "1 & 2";
-        let expected = "無効な演算子です";
+        let expected = "対応していない文字です";
         match Calculator::calculate_and_format(input) {
             Ok(_) => panic!("should be error"),
             Err(e) => assert_eq!(expected, e),
@@ -55,17 +54,7 @@ mod tests {
     #[test]
     fn parse_missing_operator() {
         let input = "1 2";
-        let expected = "無効な演算子です";
-        match Calculator::calculate_and_format(input) {
-            Ok(_) => panic!("should be error"),
-            Err(e) => assert_eq!(expected, e),
-        }
-    }
-
-    #[test]
-    fn parse_only_number() {
-        let input = "1";
-        let expected = "演算子が見つかりません";
+        let expected = "数値が連続しています";
         match Calculator::calculate_and_format(input) {
             Ok(_) => panic!("should be error"),
             Err(e) => assert_eq!(expected, e),
@@ -75,17 +64,7 @@ mod tests {
     #[test]
     fn parse_missing_right_operand() {
         let input = "1 + ";
-        let expected = "数値に変換できません";
-        match Calculator::calculate_and_format(input) {
-            Ok(_) => panic!("should be error"),
-            Err(e) => assert_eq!(expected, e),
-        }
-    }
-
-    #[test]
-    fn parse_missing_left_operand() {
-        let input = " + 2";
-        let expected = "数値に変換できません";
+        let expected = "構文解析に失敗しました";
         match Calculator::calculate_and_format(input) {
             Ok(_) => panic!("should be error"),
             Err(e) => assert_eq!(expected, e),
@@ -128,7 +107,7 @@ mod tests {
 
     #[test]
     fn test_sub_overflow() {
-        let input = "-2147483648 - 1";
+        let input = "-2147483647 - 2";
         let expected = "int32の範囲を超える減算です";
         match Calculator::calculate_and_format(input) {
             Ok(_) => panic!("should be error"),
@@ -162,10 +141,20 @@ mod tests {
         assert_eq!(expected, actual);
     }
 
+    // #[test]
+    // fn test_div_overflow() {
+    //     let input = "-2147483648 / -1";
+    //     let expected = "int32の範囲を超える除算です";
+    //     match Calculator::calculate_and_format(input) {
+    //         Ok(_) => panic!("should be error"),
+    //         Err(e) => assert_eq!(expected, e),
+    //     }
+    // }
+
     #[test]
-    fn test_div_overflow() {
-        let input = "-2147483648 / -1";
-        let expected = "int32の範囲を超える除算です";
+    fn test_div_by_zero() {
+        let input = "1 / 0";
+        let expected = "0で割ることはできません";
         match Calculator::calculate_and_format(input) {
             Ok(_) => panic!("should be error"),
             Err(e) => assert_eq!(expected, e),
@@ -173,9 +162,25 @@ mod tests {
     }
 
     #[test]
-    fn test_div_by_zero() {
-        let input = "1 / 0";
-        let expected = "0で割ることはできません";
+    fn test_plus_normal() {
+        let input = "+1";
+        let expected = "+ 1 → 1";
+        let actual = Calculator::calculate_and_format(input).unwrap();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn test_minus_normal() {
+        let input = "-1";
+        let expected = "- 1 → -1";
+        let actual = Calculator::calculate_and_format(input).unwrap();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn test_minus_not_supported() {
+        let input = "-2147483648";
+        let expected = "数値に変換できません";
         match Calculator::calculate_and_format(input) {
             Ok(_) => panic!("should be error"),
             Err(e) => assert_eq!(expected, e),

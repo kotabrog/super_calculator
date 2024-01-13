@@ -6,6 +6,8 @@ pub enum Operator {
     Sub,
     Mul,
     Div,
+    Plus,
+    Minus,
 }
 
 impl Operator {
@@ -13,12 +15,25 @@ impl Operator {
         "+-*/".contains(c)
     }
 
-    pub fn parse(c: char) -> Result<Self, String> {
-        match c {
-            '+' => Ok(Operator::Add),
-            '-' => Ok(Operator::Sub),
-            '*' => Ok(Operator::Mul),
-            '/' => Ok(Operator::Div),
+    pub fn is_unary(&self) -> bool {
+        match self {
+            Operator::Add => false,
+            Operator::Sub => false,
+            Operator::Mul => false,
+            Operator::Div => false,
+            Operator::Plus => true,
+            Operator::Minus => true,
+        }
+    }
+
+    pub fn parse(c: char, unary: bool) -> Result<Self, String> {
+        match (c, unary) {
+            ('+', false) => Ok(Operator::Add),
+            ('-', false) => Ok(Operator::Sub),
+            ('*', false) => Ok(Operator::Mul),
+            ('/', false) => Ok(Operator::Div),
+            ('+', true) => Ok(Operator::Plus),
+            ('-', true) => Ok(Operator::Minus),
             _ => Err("無効な演算子です".to_string()),
         }
     }
@@ -29,17 +44,37 @@ impl Operator {
             Operator::Sub => 1,
             Operator::Mul => 2,
             Operator::Div => 2,
+            Operator::Plus => 3,
+            Operator::Minus => 3,
         }
     }
 
-    pub fn calculate(&self, left: &Term, right: &Term) -> Result<Term, String> {
+    pub fn calculate_unary(&self, term: &Term) -> Result<Term, String> {
+        match self {
+            Operator::Plus => Self::plus(term),
+            Operator::Minus => Self::minus(term),
+            _ => Err("無効な演算です".to_string()),
+        }
+    }
+
+    pub fn calculate_binary(&self, left: &Term, right: &Term) -> Result<Term, String> {
         match self {
             Operator::Add => Self::add(left, right),
             Operator::Sub => Self::sub(left, right),
             Operator::Mul => Self::mul(left, right),
             Operator::Div => Self::div(left, right),
+            _ => Err("無効な演算です".to_string()),
         }
     }
+
+    // pub fn calculate(&self, terms: &[Term]) -> Result<Term, String> {
+    //     let terms_len = terms.len();
+    //     match terms_len {
+    //         1 => self.calculate_unary(&terms[0]),
+    //         2 => self.calculate_binary(&terms[0], &terms[1]),
+    //         _ => Err("無効な演算です".to_string()),
+    //     }
+    // }
 
     fn add(left: &Term, right: &Term) -> Result<Term, String> {
         match (left, right) {
@@ -72,6 +107,20 @@ impl Operator {
             _ => Err("無効な演算です".to_string()),
         }
     }
+
+    fn plus(term: &Term) -> Result<Term, String> {
+        match term {
+            Term::Num(x) => x.plus().map(Term::Num),
+            _ => Err("無効な演算です".to_string()),
+        }
+    }
+
+    fn minus(term: &Term) -> Result<Term, String> {
+        match term {
+            Term::Num(x) => x.minus().map(Term::Num),
+            _ => Err("無効な演算です".to_string()),
+        }
+    }
 }
 
 impl std::fmt::Display for Operator {
@@ -81,6 +130,8 @@ impl std::fmt::Display for Operator {
             Operator::Sub => "-",
             Operator::Mul => "*",
             Operator::Div => "/",
+            Operator::Plus => "+",
+            Operator::Minus => "-",
         };
         write!(f, "{}", op)
     }
