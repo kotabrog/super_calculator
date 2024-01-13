@@ -5,8 +5,10 @@ mod num;
 mod term;
 mod operator;
 mod expression;
+mod ast;
 
 use anyhow::Result;
+use expression::Expression;
 
 const INPUT_AREA: &str = "input-area";
 const FORMATTED_DISPLAY: &str = "formatted-display";
@@ -21,8 +23,9 @@ pub struct Calculator {}
 
 impl Calculator {
     fn calculate_and_format(input: &str) -> Result<String, String> {
+        // let expression = Expression::parse(input)?;
         let expression = Self::parse(input)?;
-        let result = expression.calculate()?;
+        let result = expression.calculate_temp()?;
         Ok(format!("{} → {}", expression, result))
     }
 }
