@@ -13,6 +13,7 @@ pub struct Expression {
 enum TermType {
     Num,
     Operator,
+    Paren,
 }
 
 impl Expression {
@@ -26,6 +27,7 @@ impl Expression {
         match node.value().as_ref() {
             Some(Term::Num(_)) => Ok(TermType::Num),
             Some(Term::Operator(_)) => Ok(TermType::Operator),
+            Some(Term::Paren(_)) => Ok(TermType::Paren),
             _ => Err("構文解析に失敗しました".to_string()),
         }
     }
@@ -33,6 +35,13 @@ impl Expression {
     fn is_unary_operator(node: &Node<Term>) -> Result<bool, String> {
         match node.value().as_ref() {
             Some(Term::Operator(op)) => Ok(op.is_unary()),
+            _ => Err("構文解析に失敗しました".to_string()),
+        }
+    }
+
+    fn is_right_paren(node: &Node<Term>) -> Result<bool, String> {
+        match node.value().as_ref() {
+            Some(Term::Paren(paren)) => Ok(!paren.is_left()),
             _ => Err("構文解析に失敗しました".to_string()),
         }
     }

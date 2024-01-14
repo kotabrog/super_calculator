@@ -6,6 +6,7 @@ mod term;
 mod operator;
 mod expression;
 mod ast;
+mod paren;
 
 use anyhow::Result;
 use expression::Expression;
@@ -80,6 +81,68 @@ mod tests {
     }
 
     #[test]
+    fn parse_paren_normal() {
+        let input = "2 - (1 + 2) * 3";
+        let expected = "2 - ( 1 + 2 ) * 3 → -7";
+        let actual = Calculator::calculate_and_format(input).unwrap();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn parse_paren_unary() {
+        let input = "-(-2 + 1) * 3";
+        let expected = "- ( - 2 + 1 ) * 3 → 3";
+        let actual = Calculator::calculate_and_format(input).unwrap();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn parse_paren_num_to_paren() {
+        let input = "1 + 2(2 * 3)";
+        let expected = "1 + 2 * ( 2 * 3 ) → 13";
+        let actual = Calculator::calculate_and_format(input).unwrap();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn parse_paren_paren_to_num() {
+        let input = "(1 + 2)2 * 3";
+        let expected = "( 1 + 2 ) * 2 * 3 → 18";
+        let actual = Calculator::calculate_and_format(input).unwrap();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn parse_paren_missing_right_paren() {
+        let input = "1 + (2 * 3";
+        let expected = "括弧が閉じられていません";
+        match Calculator::calculate_and_format(input) {
+            Ok(_) => panic!("should be error"),
+            Err(e) => assert_eq!(expected, e),
+        }
+    }
+
+    #[test]
+    fn parse_paren_missing_left_paren() {
+        let input = "1 + 2) * 3";
+        let expected = "括弧の対応が取れていません";
+        match Calculator::calculate_and_format(input) {
+            Ok(_) => panic!("should be error"),
+            Err(e) => assert_eq!(expected, e),
+        }
+    }
+
+    #[test]
+    fn parse_paren_missing_element() {
+        let input = "1 + ()";
+        let expected = "括弧の中に要素がありませんでした";
+        match Calculator::calculate_and_format(input) {
+            Ok(_) => panic!("should be error"),
+            Err(e) => assert_eq!(expected, e),
+        }
+    }
+
+    #[test]
     fn test_add_normal() {
         let input = "1 + 2";
         let expected = "1 + 2 → 3";
@@ -141,15 +204,15 @@ mod tests {
         assert_eq!(expected, actual);
     }
 
-    // #[test]
-    // fn test_div_overflow() {
-    //     let input = "-2147483648 / -1";
-    //     let expected = "int32の範囲を超える除算です";
-    //     match Calculator::calculate_and_format(input) {
-    //         Ok(_) => panic!("should be error"),
-    //         Err(e) => assert_eq!(expected, e),
-    //     }
-    // }
+    #[test]
+    fn test_div_overflow() {
+        let input = "(-2147483647 - 1) / (-1)";
+        let expected = "int32の範囲を超える除算です";
+        match Calculator::calculate_and_format(input) {
+            Ok(_) => panic!("should be error"),
+            Err(e) => assert_eq!(expected, e),
+        }
+    }
 
     #[test]
     fn test_div_by_zero() {

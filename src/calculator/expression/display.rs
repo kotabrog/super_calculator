@@ -37,6 +37,19 @@ impl Expression {
                 }
                 result.push(node.value().as_ref().unwrap().to_string());
             }
+            TermType::Paren => {
+                if !Self::is_right_paren(node)? {
+                    return Err("括弧が閉じられていません".to_string());
+                }
+                if node.len_children() != 1 {
+                    return Err("構文解析に失敗しました".to_string());
+                }
+                result.push("(".to_string());
+                let child_result = Self::display_loop(
+                    node.children().get(0).unwrap())?;
+                result.extend(child_result);
+                result.push(")".to_string());
+            },
         }
         Ok(result)
     }

@@ -40,7 +40,16 @@ impl Expression {
                     return Err("構文解析に失敗しました".to_string());
                 }
                 Ok(node.value().as_ref().unwrap().clone())
-            }
+            },
+            TermType::Paren => {
+                if !Self::is_right_paren(node)? {
+                    return Err("括弧が閉じられていません".to_string());
+                }
+                if node.len_children() != 1 {
+                    return Err("構文解析に失敗しました".to_string());
+                }
+                Self::calculate_loop(node.children().get(0).unwrap())
+            },
         }
     }
 
