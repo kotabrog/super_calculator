@@ -1,8 +1,8 @@
 # You must change these to your own details.
 [package]
 name = "super_calculator"
-description = "My super awesome Rust, WebAssembly, and Webpack project!"
-version = "0.5.0"
+description = "Super calculator for various calculations"
+version = "0.6.0"
 authors = ["kota"]
 categories = ["wasm"]
 readme = "README.md"
