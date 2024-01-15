@@ -20,6 +20,7 @@ console_error_panic_hook = "0.1.7"
 anyhow = "1.0.75"
 futures = "0.3.28"
 wasm-bindgen-futures = "0.4.37"
+num = "0.4.1"
 
 # The `web-sys` crate allows you to interact with the various browser APIs,
 # like the DOM.

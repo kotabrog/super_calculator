@@ -7,6 +7,7 @@ mod operator;
 mod expression;
 mod ast;
 mod paren;
+mod fraction;
 
 use anyhow::Result;
 use expression::Expression;
@@ -140,6 +141,22 @@ mod tests {
             Ok(_) => panic!("should be error"),
             Err(e) => assert_eq!(expected, e),
         }
+    }
+
+    #[test]
+    fn parse_fraction_normal() {
+        let input = "1/2 + 3/4";
+        let expected = "1 / 2 + 3 / 4 → 5 / 4";
+        let actual = Calculator::calculate_and_format(input).unwrap();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn parse_fraction_denominator_minus() {
+        let input = "1/2 + 3/(-4)";
+        let expected = "1 / 2 + 3 / ( - 4 ) → -1 / 4";
+        let actual = Calculator::calculate_and_format(input).unwrap();
+        assert_eq!(expected, actual);
     }
 
     #[test]
