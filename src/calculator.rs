@@ -5,7 +5,7 @@ mod num;
 mod term;
 mod operator;
 mod expression;
-mod ast;
+mod node;
 mod paren;
 mod fraction;
 

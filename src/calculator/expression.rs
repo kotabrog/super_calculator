@@ -3,7 +3,7 @@ mod display;
 mod calculate;
 
 use super::term::Term;
-use super::ast::Node;
+use super::node::Node;
 
 #[derive(Debug, Clone)]
 pub struct Expression {

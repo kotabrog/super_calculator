@@ -1,5 +1,5 @@
 use super::super::term::Term;
-use super::super::ast::Node;
+use super::super::node::Node;
 use super::{Expression, TermType};
 
 impl Expression {

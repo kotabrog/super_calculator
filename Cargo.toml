@@ -2,7 +2,7 @@
 [package]
 name = "super_calculator"
 description = "Super calculator for various calculations"
-version = "0.6.0"
+version = "0.7.0"
 authors = ["kota"]
 categories = ["wasm"]
 readme = "README.md"
