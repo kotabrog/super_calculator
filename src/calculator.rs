@@ -266,4 +266,92 @@ mod tests {
             Err(e) => assert_eq!(expected, e),
         }
     }
+
+    #[test]
+    fn test_pow_normal() {
+        let input = "2 ^ 3";
+        let expected = "2 ^ 3 → 8";
+        let actual = Calculator::calculate_and_format(input).unwrap();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn test_pow_fraction() {
+        let input = "(3 / 2) ^ 3";
+        let expected = "( 3 / 2 ) ^ 3 → 27 / 8";
+        let actual = Calculator::calculate_and_format(input).unwrap();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn test_pow_exp_zero() {
+        let input = "2 ^ 0";
+        let expected = "2 ^ 0 → 1";
+        let actual = Calculator::calculate_and_format(input).unwrap();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn test_pow_zero() {
+        let input = "0 ^ 2";
+        let expected = "0 ^ 2 → 0";
+        let actual = Calculator::calculate_and_format(input).unwrap();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn test_pow_zero_zero() {
+        let input = "0 ^ 0";
+        let expected = "0 ^ 0 → 1";
+        let actual = Calculator::calculate_and_format(input).unwrap();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn test_pow_priority() {
+        let input = "-2 ^ 3 ^ 2 * 2 - 3";
+        let expected = "- 2 ^ 3 ^ 2 * 2 - 3 → -131";
+        let actual = Calculator::calculate_and_format(input).unwrap();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn test_pow_negative() {
+        let input = "2 ^ (-3)";
+        let expected = "負数の累乗はできません";
+        match Calculator::calculate_and_format(input) {
+            Ok(_) => panic!("should be error"),
+            Err(e) => assert_eq!(expected, e)
+        }
+    }
+
+    #[test]
+    fn test_pow_exp_fraction() {
+        let input = "2 ^ (3 / 2)";
+        let expected = "2の3 / 2乗は計算できません";
+        match Calculator::calculate_and_format(input) {
+            Ok(_) => panic!("should be error"),
+            Err(e) => assert_eq!(expected, e)
+        }
+    }
+
+    #[test]
+    fn test_pow_overflow() {
+        let input = "2147483647 ^ 2";
+        let expected = "int32の範囲を超える累乗です";
+        match Calculator::calculate_and_format(input) {
+            Ok(_) => panic!("should be error"),
+            Err(e) => assert_eq!(expected, e)
+        }
+    }
+
+    #[test]
+    fn test_pow_unary() {
+        let input = "^ 2";
+        let expected = "無効な演算子です";
+        match Calculator::calculate_and_format(input) {
+            Ok(_) => panic!("should be error"),
+            Err(e) => assert_eq!(expected, e)
+        }
+    }
 }

@@ -200,6 +200,28 @@ impl Num {
         }
     }
 
+    pub fn pow(&self, other: &Self) -> Result<Self, String> {
+        match (self, other) {
+            (Self::I32(x), Self::I32(y)) => {
+                if *y < 0 {
+                    Err("負数の累乗はできません".to_string())
+                } else {
+                    x.checked_pow(*y as u32)
+                        .ok_or("int32の範囲を超える累乗です".to_string())
+                        .map(Self::I32)
+                }
+            },
+            (Self::Fraction(x), Self::I32(y)) => {
+                let fraction = x.pow(&Num::I32(*y))?;
+                let num = Num::Fraction(Box::new(fraction));
+                num.normalize_to_integer()
+            },
+            (x, y) => {
+                Err(format!("{}の{}乗は計算できません", x, y))
+            },
+        }
+    }
+
     pub fn gcd(&self, other: &Self) -> Result<Self, String> {
         match (self, other) {
             (Self::I32(x), Self::I32(y)) => {

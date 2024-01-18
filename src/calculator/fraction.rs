@@ -129,6 +129,15 @@ impl Fraction {
         let denominator = self.numerator.clone();
         Self::new_result(numerator, denominator)
     }
+
+    pub fn pow(&self, other: &Num) -> Result<Self, String> {
+        if other.is_minus() {
+            return Err("分数の負数乗は計算できません".to_string())
+        }
+        let numerator = self.numerator.pow(other)?;
+        let denominator = self.denominator.pow(other)?;
+        Self::new_result(numerator, denominator)
+    }
 }
 
 impl std::fmt::Display for Fraction {

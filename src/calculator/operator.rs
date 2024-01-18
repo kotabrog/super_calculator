@@ -6,13 +6,14 @@ pub enum Operator {
     Sub,
     Mul,
     Div,
+    Pow,
     Plus,
     Minus,
 }
 
 impl Operator {
     pub fn is_operator(c: char) -> bool {
-        "+-*/".contains(c)
+        "+-*/^".contains(c)
     }
 
     pub fn is_unary(&self) -> bool {
@@ -21,6 +22,7 @@ impl Operator {
             Operator::Sub => false,
             Operator::Mul => false,
             Operator::Div => false,
+            Operator::Pow => false,
             Operator::Plus => true,
             Operator::Minus => true,
         }
@@ -32,6 +34,7 @@ impl Operator {
             ('-', false) => Ok(Operator::Sub),
             ('*', false) => Ok(Operator::Mul),
             ('/', false) => Ok(Operator::Div),
+            ('^', false) => Ok(Operator::Pow),
             ('+', true) => Ok(Operator::Plus),
             ('-', true) => Ok(Operator::Minus),
             _ => Err("無効な演算子です".to_string()),
@@ -44,6 +47,7 @@ impl Operator {
             Operator::Sub => 1,
             Operator::Mul => 2,
             Operator::Div => 2,
+            Operator::Pow => 4,
             Operator::Plus => 3,
             Operator::Minus => 3,
         }
@@ -63,6 +67,7 @@ impl Operator {
             Operator::Sub => Self::sub(left, right),
             Operator::Mul => Self::mul(left, right),
             Operator::Div => Self::div(left, right),
+            Operator::Pow => Self::pow(left, right),
             _ => Err("無効な演算です".to_string()),
         }
     }
@@ -108,6 +113,14 @@ impl Operator {
         }
     }
 
+    fn pow(left: &Term, right: &Term) -> Result<Term, String> {
+        match (left, right) {
+            (Term::Num(x), Term::Num(y))
+                => x.pow(y).map(Term::Num),
+            _ => Err("無効な演算です".to_string()),
+        }
+    }
+
     fn plus(term: &Term) -> Result<Term, String> {
         match term {
             Term::Num(x) => x.plus().map(Term::Num),
@@ -130,6 +143,7 @@ impl std::fmt::Display for Operator {
             Operator::Sub => "-",
             Operator::Mul => "*",
             Operator::Div => "/",
+            Operator::Pow => "^",
             Operator::Plus => "+",
             Operator::Minus => "-",
         };
