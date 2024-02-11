@@ -10,8 +10,26 @@ pub fn get_html_element_by_id(id: &str) -> Result<HtmlElement> {
         .map_err(|element| anyhow!("Error converting {:#?} to HtmlElement", element))
 }
 
+pub fn get_html_element_from_event(event: &web_sys::Event) -> Result<HtmlElement> {
+    event
+        .target()
+        .ok_or_else(|| anyhow!("No target found on event"))?
+        .dyn_into::<HtmlElement>()
+        .map_err(|element| anyhow!("Error converting {:#?} to HtmlElement", element))
+}
+
+pub fn has_class(element: &HtmlElement, class: &str) -> bool {
+    element.class_list().contains(class)
+}
+
 pub fn set_class(element: &HtmlElement, class: &str) {
     element.set_class_name(class)
+}
+
+pub fn add_class(element: &HtmlElement, class: &str) -> Result<()> {
+    element.class_list()
+        .add_1(class)
+        .map_err(|_| anyhow!("Error adding class {}", class))
 }
 
 pub fn remove_class(element: &HtmlElement, class: &str) -> Result<()> {

@@ -8,18 +8,9 @@ body {
 
 .container {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     height: 100vh;
-}
-
-#help-button {
-    position: fixed;
-    right: 30px;
-    top: 30px;
-    background: none;
-    border: none;
-    cursor: pointer;
 }
 
 #help-popup-container {
@@ -28,6 +19,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
+    z-index: 100;
 }
 
 #help-popup {
@@ -39,11 +31,10 @@ body {
     padding: 20px;
     border: 1px solid #ccc;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    z-index: 100;
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 #close-help {
@@ -52,13 +43,23 @@ body {
     right: 10px;
 }
 
-.device {
-    width: 90%;
+.main-panel {
+    position: relative;
+    flex-grow: 1;
     height: 90%;
     display: grid;
     grid-template-rows: 1fr auto 1fr;
     grid-template-columns: 1fr 80% 1fr;
     align-content: center;
+}
+
+#help-button {
+    position: absolute;
+    right: 30px;
+    top: 30px;
+    background: none;
+    border: none;
+    cursor: pointer;
 }
 
 #history-container {
@@ -83,16 +84,34 @@ body {
     color: red;
 }
 
-#input-area {
+#input-container {
     grid-row: 2;
     grid-column: 2;
     width: 100%;
     height: 50px;
+    margin-bottom: 10px;
+}
+
+#variable-assignment-input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.input-area {
     font-size: 1.2em;
     padding: 10px;
-    margin-bottom: 10px;
     box-sizing: border-box;
     text-align: center;
+}
+
+.half-width {
+    width: 48%;
+}
+
+#input-area {
+    width: 100%;
 }
 
 #formatted-display {
@@ -107,4 +126,67 @@ body {
     text-align: center;
     overflow-x: auto;
     white-space: nowrap;
+}
+
+.side-panel {
+    width: 200px;
+    height: 100%;
+    background-color: #f0f0f0;
+    padding: 30px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+#left-panel {
+    box-sizing: border-box;
+    overflow-y: auto;
+    gap: 10px;
+}
+
+.variable-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: calc(100% - 20px);
+    box-sizing: border-box;
+    overflow: hidden;
+    min-height: 50px;
+}
+
+.variable-content {
+    display: flex;
+    align-items: center;
+    overflow-x: auto;
+    margin-right: 10px;
+}
+
+.variable-name {
+    font-weight: bold;
+}
+
+.variable-options {
+    flex-shrink: 0;
+}
+
+.variable-item.active {
+    background-color: #e9e9e9;
+}
+
+.material-symbols-outlined {
+    font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 48;
+    cursor: pointer;
+}
+
+#right-panel button {
+    margin-bottom: 10px;
 }

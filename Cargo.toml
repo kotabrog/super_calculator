@@ -30,11 +30,13 @@ features = [
     "console",
     "HtmlElement",
     "HtmlInputElement",
+    "HtmlSelectElement",
     "InputEvent",
     "KeyboardEvent",
     "Window",
     "Document",
     "DomTokenList",
+    "NodeList",
 ]
 
 # The `console_error_panic_hook` crate provides better debugging of panics by

@@ -1,4 +1,5 @@
 mod setup;
+mod variable_button;
 mod format;
 mod history;
 mod num;
@@ -12,6 +13,9 @@ mod fraction;
 use anyhow::Result;
 use expression::Expression;
 
+const MODE_SELECT: &str = "mode-select";
+const CALCULATION_INPUT: &str = "calculation-input";
+const VARIABLE_ASSIGNMENT_INPUT: &str = "variable-assignment-input";
 const INPUT_AREA: &str = "input-area";
 const FORMATTED_DISPLAY: &str = "formatted-display";
 const HISTORY_CONTAINER: &str = "history-container";

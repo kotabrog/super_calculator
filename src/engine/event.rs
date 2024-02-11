@@ -1,8 +1,13 @@
 use anyhow::Result;
 use crate::browser::{
     event_to_keboard_event, get_input_element_from_event,
+    get_html_select_element_from_event,
+    get_html_element_from_event,
 };
-use super::{HtmlInputElement, KeyboardEvent};
+use super::{
+    HtmlInputElement, KeyboardEvent, HtmlSelectElement,
+    HtmlElement,
+};
 
 #[derive(Debug, Clone)]
 pub struct Event {
@@ -18,8 +23,16 @@ impl Event {
     //     Ok(Element::new(get_element_from_event(&self.inner)?))
     // }
 
+    pub fn get_target_html_element(&self) -> Result<HtmlElement> {
+        Ok(HtmlElement::new(get_html_element_from_event(&self.inner)?))
+    }
+
     pub fn get_target_input_element(&self) -> Result<HtmlInputElement> {
         Ok(HtmlInputElement::new(get_input_element_from_event(&self.inner)?))
+    }
+
+    pub fn get_target_html_select_element(&self) -> Result<HtmlSelectElement> {
+        Ok(HtmlSelectElement::new(get_html_select_element_from_event(&self.inner)?))
     }
 }
 

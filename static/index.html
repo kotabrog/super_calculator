@@ -8,11 +8,6 @@
   </head>
   <body>
     <div class="container">
-      <button id="help-button">
-        <span class="material-symbols-outlined">
-          help
-        </span>
-      </button>
       <div id="help-popup-container" class="hidden">
         <div id="help-popup">
           <div id="help-content">
@@ -29,10 +24,56 @@
           </div>
         </div>
       </div>
-      <div class="device">
+      <div id="left-panel" class="side-panel">
+        <div class="variable-item">
+          <div class="variable-content">
+            <span class="variable-name">x</span>
+            <span class="variable-equal">=</span>
+            <span class="variable-value">5</span>
+          </div>
+          <span class="variable-options material-symbols-outlined">more_vert</span>
+        </div>
+        <div class="variable-item">
+          <div class="variable-content">
+            <span class="variable-name">y</span>
+            <span class="variable-equal">=</span>
+            <span class="variable-value">10</span>
+          </div>
+          <span class="variable-options material-symbols-outlined">more_vert</span>
+        </div>
+        <div class="variable-item active">
+          <div class="variable-content">
+            <span class="variable-name">z</span>
+            <span class="variable-equal">=</span>
+            <span class="variable-value">15</span>
+          </div>
+          <span class="variable-options material-symbols-outlined">more_vert</span>
+        </div>
+      </div>
+      <div class="main-panel">
+        <button id="help-button">
+          <span class="material-symbols-outlined">
+            help
+          </span>
+        </button>
         <div id="history-container"></div>
-        <input id="input-area" type="text" placeholder="数式を入力してください" autofocus>
+        <div id="input-container">
+          <div id="calculation-input">
+            <input id="input-area" class="input-area" type="text" placeholder="数式を入力してください" autofocus>
+          </div>
+          <div id="variable-assignment-input", class="hidden">
+            <input id="input-area1" class="input-area half-width" type="text" placeholder="文字" autofocus>
+            <p>=</p>
+            <input id="input-area2" class="input-area half-width" type="text" placeholder="数式" autofocus>
+          </div>
+        </div>
         <div id="formatted-display"></div>
+      </div>
+      <div id="right-panel" class="side-panel">
+        <select id="mode-select">
+          <option value="calculation">式の計算モード</option>
+          <option value="variable-assignment">変数の登録モード</option>
+        </select>
       </div>
     </div>
     <script src="index.js"></script>
