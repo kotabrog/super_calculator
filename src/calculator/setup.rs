@@ -63,6 +63,25 @@ impl Calculator {
             forget_event_closure(closure);
         }
 
+        // temp code
+        let delete_buttons = document.query_selector_all(".variable-delete")
+            .map_err(|_| anyhow::anyhow!("No delete buttons found"))?;
+        for i in 0..delete_buttons.length() {
+            let button = delete_buttons.get(i)
+                .ok_or_else(|| anyhow::anyhow!("No button found at index {}", i))?
+                .dyn_into::<web_sys::Element>()
+                .map_err(|value| anyhow::anyhow!("Error converting {:#?} to HtmlElement", value))?;
+            let button = Element::new(button);
+            let closure = create_event_closure(move |e: web_sys::Event| {
+                match Self::handle_delete_button(e) {
+                    Ok(_) => {}
+                    Err(e) => error!("{}", e),
+                }
+            });
+            button.add_event_listener_with_callback("click", &closure)?;
+            forget_event_closure(closure);
+        }
+
         let input = Element::new_from_id(INPUT_AREA)?;
         let closure = create_event_closure(move |e: web_sys::Event| {
             match Self::handle_input(e) {
@@ -109,6 +128,14 @@ impl Calculator {
         let target = event.get_target_html_element()?;
         let button = VariableButton::new(target);
         button.toggle_active()
+    }
+
+    pub fn handle_delete_button(event: web_sys::Event) -> Result<()> {
+        let event = Event::new(event);
+        let target = event.get_target_html_element()?;
+        let parent = target.parent_element()?.parent_element()?;
+        parent.remove();
+        Ok(())
     }
 
     fn handle_switch_mode(event: web_sys::Event) -> Result<()> {

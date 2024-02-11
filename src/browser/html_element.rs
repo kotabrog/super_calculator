@@ -18,6 +18,10 @@ pub fn get_html_element_from_event(event: &web_sys::Event) -> Result<HtmlElement
         .map_err(|element| anyhow!("Error converting {:#?} to HtmlElement", element))
 }
 
+pub fn remove(element: &HtmlElement) {
+    element.remove()
+}
+
 pub fn has_class(element: &HtmlElement, class: &str) -> bool {
     element.class_list().contains(class)
 }
@@ -42,6 +46,15 @@ pub fn append_child(parent: &HtmlElement, child: &Node) -> Result<Node> {
     parent
         .append_child(child)
         .map_err(|_| anyhow!("Error appending child to parent"))
+}
+
+pub fn parent_element(element: &HtmlElement) -> Result<HtmlElement> {
+    element
+        .parent_element()
+        .ok_or_else(|| anyhow!("No parent element found"))
+        .and_then(|element| element
+            .dyn_into::<HtmlElement>()
+            .map_err(|element| anyhow!("Error converting {:#?} to HtmlElement", element)))
 }
 
 pub fn is_scrolled_to_bottom(element: &HtmlElement) -> bool {

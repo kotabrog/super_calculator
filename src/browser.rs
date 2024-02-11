@@ -15,7 +15,7 @@ pub use element::{
 pub use html_element::{
     get_html_element_by_id, append_child, is_scrolled_to_bottom,
     remove_class, set_class, get_html_element_from_event,
-    has_class, add_class,
+    has_class, add_class, parent_element, remove,
 };
 pub use input_element::{
     get_input_element_by_id, get_input_element_from_event,

@@ -1,7 +1,8 @@
 use anyhow::Result;
 use crate::browser::{
     get_html_element_by_id, is_scrolled_to_bottom, append_child,
-    remove_class, set_class, has_class, add_class,
+    remove_class, set_class, has_class, add_class, parent_element,
+    remove,
 };
 use super::Node;
 
@@ -17,6 +18,10 @@ impl HtmlElement {
 
     pub fn new_from_id(id: &str) -> Result<Self> {
         Ok(Self::new(get_html_element_by_id(id)?))
+    }
+
+    pub fn remove(&self) {
+        remove(&self.inner)
     }
 
     pub fn get_inner_text(&self) -> String {
@@ -46,6 +51,10 @@ impl HtmlElement {
     pub fn append_child(&self, child: &Node) -> Result<Node> {
         Ok(Node::new(append_child(
             &self.inner, child.inner())?))
+    }
+
+    pub fn parent_element(&self) -> Result<Self> {
+        Ok(Self::new(parent_element(&self.inner)?))
     }
 
     pub fn is_scrolled_to_bottom(&self) -> bool {
