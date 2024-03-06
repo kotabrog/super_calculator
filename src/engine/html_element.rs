@@ -2,9 +2,10 @@ use anyhow::Result;
 use crate::browser::{
     get_html_element_by_id, is_scrolled_to_bottom, append_child,
     remove_class, set_class, has_class, add_class, parent_element,
-    remove,
+    remove, set_inner_html,
+    create_element_from_html_element,
 };
-use super::Node;
+use super::{Node, Element};
 
 #[derive(Debug, Clone)]
 pub struct HtmlElement {
@@ -20,6 +21,14 @@ impl HtmlElement {
         Ok(Self::new(get_html_element_by_id(id)?))
     }
 
+    // pub fn convert_to_node(&self) -> Result<Node> {
+    //     Ok(Node::new(get_node_from_html_element(self.inner.clone())?))
+    // }
+
+    pub fn convert_to_element(&self) -> Result<Element> {
+        Ok(Element::new(create_element_from_html_element(self.inner.clone())?))
+    }
+
     pub fn remove(&self) {
         remove(&self.inner)
     }
@@ -30,6 +39,10 @@ impl HtmlElement {
 
     pub fn set_inner_text(&self, value: &str) {
         self.inner.set_inner_text(value)
+    }
+
+    pub fn set_inner_html(&self, value: &str) {
+        set_inner_html(&self.inner, value)
     }
 
     pub fn has_class(&self, class: &str) -> bool {

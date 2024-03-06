@@ -11,10 +11,10 @@ use super::{
     Calculator, INPUT_AREA, FORMATTED_DISPLAY, HISTORY_CONTAINER,
     HELP_POPUP_CONTAINER, HIDDEN, HELP_BUTTON, CLOSE_HELP, MODE_SELECT,
     CALCULATION_INPUT, VARIABLE_ASSIGNMENT_INPUT,
+    INPUT_AREA1, INPUT_AREA2,
     variable_button::VariableButton,
+    variable_manager::{VariableManager, VariableState},
 };
-
-use wasm_bindgen::JsCast;
 
 enum Mode {
     Calculation,
@@ -43,45 +43,6 @@ impl Calculator {
         mode_select.add_event_listener_with_callback("change", &closure)?;
         forget_event_closure(closure);
 
-        // temp code
-        let document = crate::browser::document()?;
-        let variable_items = document.query_selector_all(".variable-item")
-            .map_err(|_| anyhow::anyhow!("No variable items found"))?;
-        for i in 0..variable_items.length() {
-            let item = variable_items.get(i)
-                .ok_or_else(|| anyhow::anyhow!("No item found at index {}", i))?
-                .dyn_into::<web_sys::Element>()
-                .map_err(|value| anyhow::anyhow!("Error converting {:#?} to HtmlElement", value))?;
-            let item = Element::new(item);
-            let closure = create_event_closure(move |e: web_sys::Event| {
-                match Self::handle_toggle_activate(e) {
-                    Ok(_) => {}
-                    Err(e) => error!("{}", e),
-                }
-            });
-            item.add_event_listener_with_callback("click", &closure)?;
-            forget_event_closure(closure);
-        }
-
-        // temp code
-        let delete_buttons = document.query_selector_all(".variable-delete")
-            .map_err(|_| anyhow::anyhow!("No delete buttons found"))?;
-        for i in 0..delete_buttons.length() {
-            let button = delete_buttons.get(i)
-                .ok_or_else(|| anyhow::anyhow!("No button found at index {}", i))?
-                .dyn_into::<web_sys::Element>()
-                .map_err(|value| anyhow::anyhow!("Error converting {:#?} to HtmlElement", value))?;
-            let button = Element::new(button);
-            let closure = create_event_closure(move |e: web_sys::Event| {
-                match Self::handle_delete_button(e) {
-                    Ok(_) => {}
-                    Err(e) => error!("{}", e),
-                }
-            });
-            button.add_event_listener_with_callback("click", &closure)?;
-            forget_event_closure(closure);
-        }
-
         let input = Element::new_from_id(INPUT_AREA)?;
         let closure = create_event_closure(move |e: web_sys::Event| {
             match Self::handle_input(e) {
@@ -99,6 +60,18 @@ impl Calculator {
             }
         });
         input.add_event_listener_with_callback("keydown", &closure)?;
+        forget_event_closure(closure);
+
+        let input1 = Element::new_from_id(INPUT_AREA1)?;
+        let input2 = Element::new_from_id(INPUT_AREA2)?;
+        let closure = create_event_closure(move |e: web_sys::Event| {
+            match Self::handle_register_variable(e) {
+                Ok(_) => {}
+                Err(e) => error!("{}", e),
+            }
+        });
+        input1.add_event_listener_with_callback("keydown", &closure)?;
+        input2.add_event_listener_with_callback("keydown", &closure)?;
         forget_event_closure(closure);
 
         let help_button = Element::new_from_id(HELP_BUTTON)?;
@@ -133,7 +106,12 @@ impl Calculator {
     pub fn handle_delete_button(event: web_sys::Event) -> Result<()> {
         let event = Event::new(event);
         let target = event.get_target_html_element()?;
-        let parent = target.parent_element()?.parent_element()?;
+        let parent = target.parent_element()?;
+        let parent = if parent.has_class("variable-delete") {
+            parent.parent_element()?
+        } else {
+            parent
+        };
         parent.remove();
         Ok(())
     }
@@ -186,6 +164,37 @@ impl Calculator {
             Self::add_history_entry(&value, &result, &history_container)?;
             display.set_inner_text("");
             input.set_value("");
+        }
+        Ok(())
+    }
+
+    pub fn handle_register_variable(event: web_sys::Event) -> Result<()> {
+        let event = Event::new(event);
+        let event: KeyboardEvent = match event.try_into() {
+            Ok(event) => event,
+            Err(_) => {
+                return Ok(());
+            }
+        };
+        if event.ctrl_enter() {
+            let input_area1 = HtmlInputElement::new_from_id(INPUT_AREA1)?;
+            let input_area2 = HtmlInputElement::new_from_id(INPUT_AREA2)?;
+            let history_container = HtmlElement::new_from_id(HISTORY_CONTAINER)?;
+            let mut variable_manager = VariableManager::new_from_dom()?;
+            let variable = input_area1.get_value();
+            let value = input_area2.get_value();
+            let result = variable_manager.validate_input(&variable, &value);
+            let result = match result {
+                Ok((c, num)) => {
+                    let state = VariableState::new(c.to_string(), num.clone(), true);
+                    variable_manager.append_variable_to_dom(&c.to_string(), state, true)?;
+                    Ok(format!("{} = {}", c, num))
+                }
+                Err(e) => Err(e),
+            };
+            Self::add_history_entry(&format!("{} = {}", variable, value), &result, &history_container)?;
+            input_area1.set_value("");
+            input_area2.set_value("");
         }
         Ok(())
     }

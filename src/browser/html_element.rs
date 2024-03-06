@@ -18,6 +18,12 @@ pub fn get_html_element_from_event(event: &web_sys::Event) -> Result<HtmlElement
         .map_err(|element| anyhow!("Error converting {:#?} to HtmlElement", element))
 }
 
+pub fn get_html_element_from_element(element: web_sys::Element) -> Result<HtmlElement> {
+    element
+        .dyn_into::<HtmlElement>()
+        .map_err(|element| anyhow!("Error converting {:#?} to HtmlElement", element))
+}
+
 pub fn remove(element: &HtmlElement) {
     element.remove()
 }
@@ -55,6 +61,10 @@ pub fn parent_element(element: &HtmlElement) -> Result<HtmlElement> {
         .and_then(|element| element
             .dyn_into::<HtmlElement>()
             .map_err(|element| anyhow!("Error converting {:#?} to HtmlElement", element)))
+}
+
+pub fn set_inner_html(element: &HtmlElement, value: &str) {
+    element.set_inner_html(value);
 }
 
 pub fn is_scrolled_to_bottom(element: &HtmlElement) -> bool {
